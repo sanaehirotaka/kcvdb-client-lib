@@ -2,6 +2,7 @@ package logbook.kcvdb.client;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,10 @@ import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 
+/**
+ * KCVDBへ送信する抽象クラスです
+ *
+ */
 public abstract class AbstractSender {
 
     /** セッションID */
@@ -43,6 +48,9 @@ public abstract class AbstractSender {
 
     /** 送信失敗時の待ち時間 */
     protected Duration coolDownTime = Duration.ofSeconds(20);
+
+    /** 最後に送信試行(成功失敗を問わない)した時間 */
+    protected LocalDateTime sendTime = LocalDateTime.MIN;
 
     /**
      * 送信待ちキューにApiDataを追加します
@@ -124,27 +132,39 @@ public abstract class AbstractSender {
 
     /**
      * リクエストを送信する<br>
-     * このメソッドを複数回呼び出す場合、前回のメソッド呼び出しが復帰してから呼び出す必要があります
+     * このメソッドを複数回呼び出す場合、前回のメソッド呼び出しが復帰してから呼び出す必要があります<br>
+     * <strong>このメソッドはスレッドセーフではありません</strong>
      */
     public void send() {
         Optional<HttpEntity> entity = this.httpEntity();
         if (entity.isPresent()) {
-            this.failureCount = 0;
-            HttpClient client = this.client();
             try {
-                HttpPost method = new HttpPost(this.uri());
-                method.setEntity(entity.get());
+                LocalDateTime execute = this.sendTime.plus(this.waitTime);
+                LocalDateTime now = LocalDateTime.now();
+                if (execute.compareTo(now) > 0) {
+                    Duration wait = Duration.between(now, execute);
+                    TimeUnit.MILLISECONDS.sleep(wait.toMillis());
+                }
 
-                HttpResponse response = client.execute(method);
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    this.success();
-                } else {
+                this.failureCount = 0;
+                HttpClient client = this.client();
+                try {
+                    HttpPost method = new HttpPost(this.uri());
+                    method.setEntity(entity.get());
+
+                    HttpResponse response = client.execute(method);
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        this.success();
+                    } else {
+                        this.failure();
+                    }
+                } catch (Exception e) {
                     this.failure();
                 }
-            } catch (Exception e) {
-                this.failure();
+                this.sendTime = LocalDateTime.now();
+                HttpClientUtils.closeQuietly(client);
+            } catch (InterruptedException e) {
             }
-            HttpClientUtils.closeQuietly(client);
         }
     }
 
@@ -172,7 +192,7 @@ public abstract class AbstractSender {
             try {
                 TimeUnit.MILLISECONDS.sleep(wait);
             } catch (InterruptedException e) {
-                // NOP
+                return false;
             }
             return true;
         }
