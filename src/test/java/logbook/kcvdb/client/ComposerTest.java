@@ -81,9 +81,9 @@ public class ComposerTest {
                     assertEquals(data.getHttpDate(), obj.getString("HttpDate"));
                     assertEquals(data.getLocalTime(),
                             ZonedDateTime.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(obj.getString("LocalTime"))));
-                    assertEquals(data.getRequestValue(), obj.getString("RequestValue"));
+                    assertEquals(data.getRequestValue(), obj.getString("RequestBody"));
                     assertEquals(data.getRequestUri(), obj.getString("RequestUri"));
-                    assertEquals(data.getResponseValue(), obj.getString("ResponseValue"));
+                    assertEquals(data.getResponseValue(), obj.getString("ResponseBody"));
 
                 }
             }
