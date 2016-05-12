@@ -11,7 +11,7 @@ public class GzipSender extends AbstractSender {
 
     @Override
     protected String uri() {
-        return "http://kancolle.sanaechan.net/";
+        return "https://kancollevdataapi.azurewebsites.net/api/send/gzip";
     }
 
     @Override
