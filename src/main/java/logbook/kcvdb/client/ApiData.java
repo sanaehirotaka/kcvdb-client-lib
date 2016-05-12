@@ -13,10 +13,10 @@ public class ApiData {
     private final String requestUri;
 
     /** 艦これAPIのリクエストボディ */
-    private final String requestBody;
+    private final String requestValue;
 
     /** 艦これAPIのレスポンスボディ */
-    private final String responseBody;
+    private final String responseValue;
 
     /** 艦これAPIのレスポンスのステータスコードを表す数値 */
     private final int statusCode;
@@ -27,11 +27,11 @@ public class ApiData {
     /** 送信クライアントが艦これAPIを受信した日時 */
     private final ZonedDateTime localTime;
 
-    private ApiData(String requestUri, String requestBody, String responseBody, int statusCode, String httpDate,
+    private ApiData(String requestUri, String requestValue, String responseValue, int statusCode, String httpDate,
             ZonedDateTime localTime) {
         this.requestUri = Objects.requireNonNull(requestUri, "艦これAPIの絶対URL");
-        this.requestBody = Objects.requireNonNull(requestBody, "艦これAPIのリクエストボディ");
-        this.responseBody = Objects.requireNonNull(responseBody, "艦これAPIのレスポンスボディ");
+        this.requestValue = Objects.requireNonNull(requestValue, "艦これAPIのリクエストボディ");
+        this.responseValue = Objects.requireNonNull(responseValue, "艦これAPIのレスポンスボディ");
         this.statusCode = statusCode;
         this.httpDate = Objects.requireNonNull(httpDate, "艦これAPIのレスポンスヘッダーのDateフィールドから得られる文字列");
         this.localTime = Objects.requireNonNull(localTime, "送信クライアントが艦これAPIを受信した日時");
@@ -49,16 +49,16 @@ public class ApiData {
      * 艦これAPIのリクエストボディを取得します。
      * @return 艦これAPIのリクエストボディ
      */
-    public String getRequestBody() {
-        return this.requestBody;
+    public String getRequestValue() {
+        return this.requestValue;
     }
 
     /**
      * 艦これAPIのレスポンスボディを取得します。
      * @return 艦これAPIのレスポンスボディ
      */
-    public String getResponseBody() {
-        return this.responseBody;
+    public String getResponseValue() {
+        return this.responseValue;
     }
 
     /**
@@ -97,9 +97,9 @@ public class ApiData {
 
         private String requestUri;
 
-        private String requestBody;
+        private String requestValue;
 
-        private String responseBody;
+        private String responseValue;
 
         private int statusCode;
 
@@ -118,21 +118,21 @@ public class ApiData {
 
         /**
          * 艦これAPIのリクエストボディを設定します。
-         * @param requestBody 艦これAPIのリクエストボディ
+         * @param requestValue 艦これAPIのリクエストボディ
          * @return
          */
-        public ApiDataBuilder setRequestBody(String requestBody) {
-            this.requestBody = requestBody;
+        public ApiDataBuilder setRequestValue(String requestValue) {
+            this.requestValue = requestValue;
             return this;
         }
 
         /**
          * 艦これAPIのレスポンスボディを設定します。
-         * @param responseBody 艦これAPIのレスポンスボディ
+         * @param responseValue 艦これAPIのレスポンスボディ
          * @return
          */
-        public ApiDataBuilder setResponseBody(String responseBody) {
-            this.responseBody = responseBody;
+        public ApiDataBuilder setResponseValue(String responseValue) {
+            this.responseValue = responseValue;
             return this;
         }
 
@@ -172,7 +172,7 @@ public class ApiData {
          * @return ApiData
          */
         public ApiData build() {
-            return new ApiData(this.requestUri, this.requestBody, this.responseBody, this.statusCode, this.httpDate,
+            return new ApiData(this.requestUri, this.requestValue, this.responseValue, this.statusCode, this.httpDate,
                     this.localTime);
         }
     }

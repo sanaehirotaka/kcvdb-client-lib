@@ -1,6 +1,6 @@
 package logbook.kcvdb.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,9 +50,9 @@ public class ComposerTest {
                         .setLocalTime(
                                 ZonedDateTime.from(
                                         DateTimeFormatter.RFC_1123_DATE_TIME.parse("Sat, 07 May 2016 01:34:37 GMT")))
-                        .setRequestBody("RequestBody1")
+                        .setRequestValue("RequestBody1")
                         .setRequestUri("RequestUri1")
-                        .setResponseBody("ResponseBody1")
+                        .setResponseValue("ResponseBody1")
                         .build(),
                 ApiData.createBuilder()
                         .setStatusCode(301)
@@ -60,9 +60,9 @@ public class ComposerTest {
                         .setLocalTime(
                                 ZonedDateTime.from(
                                         DateTimeFormatter.RFC_1123_DATE_TIME.parse("Sat, 07 May 2016 01:36:52 GMT")))
-                        .setRequestBody("RequestBody2")
+                        .setRequestValue("RequestBody2")
                         .setRequestUri("RequestUri2")
-                        .setResponseBody("ResponseBody2")
+                        .setResponseValue("ResponseBody2")
                         .build());
 
         byte[] actual = Composer.composeBody(datas);
@@ -81,9 +81,9 @@ public class ComposerTest {
                     assertEquals(data.getHttpDate(), obj.getString("HttpDate"));
                     assertEquals(data.getLocalTime(),
                             ZonedDateTime.from(DateTimeFormatter.RFC_1123_DATE_TIME.parse(obj.getString("LocalTime"))));
-                    assertEquals(data.getRequestBody(), obj.getString("RequestBody"));
+                    assertEquals(data.getRequestValue(), obj.getString("RequestBody"));
                     assertEquals(data.getRequestUri(), obj.getString("RequestUri"));
-                    assertEquals(data.getResponseBody(), obj.getString("ResponseBody"));
+                    assertEquals(data.getResponseValue(), obj.getString("ResponseBody"));
 
                 }
             }

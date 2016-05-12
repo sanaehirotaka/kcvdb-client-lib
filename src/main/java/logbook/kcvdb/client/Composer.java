@@ -32,10 +32,10 @@ class Composer {
     }
 
     /**
-     * body を構成します
+     * Value を構成します
      *
      * @param datas APIデータ
-     * @return 送信データの body
+     * @return 送信データの Value
      */
     public static byte[] composeBody(Collection<ApiData> datas) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -45,8 +45,8 @@ class Composer {
                 JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
                 objectBuilder.add("RequestUri", data.getRequestUri());
-                objectBuilder.add("RequestBody", data.getRequestBody());
-                objectBuilder.add("ResponseBody", data.getResponseBody());
+                objectBuilder.add("RequestValue", data.getRequestValue());
+                objectBuilder.add("ResponseValue", data.getResponseValue());
                 objectBuilder.add("StatusCode", data.getStatusCode());
                 objectBuilder.add("HttpDate", data.getHttpDate());
                 objectBuilder.add("LocalTime", DateTimeFormatter.RFC_1123_DATE_TIME.format(data.getLocalTime()));
