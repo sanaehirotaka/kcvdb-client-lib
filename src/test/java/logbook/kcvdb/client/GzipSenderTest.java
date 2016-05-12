@@ -1,12 +1,8 @@
 package logbook.kcvdb.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.net.UnknownHostException;
 import java.time.ZonedDateTime;
@@ -144,9 +140,9 @@ public class GzipSenderTest {
                 .setLocalTime(
                         ZonedDateTime.from(
                                 DateTimeFormatter.RFC_1123_DATE_TIME.parse("Sat, 07 May 2016 01:34:37 GMT")))
-                .setRequestValue("RequestBody")
+                .setRequestBody("RequestBody")
                 .setRequestUri("RequestUri")
-                .setResponseValue("ResponseBody")
+                .setResponseBody("ResponseBody")
                 .build();
     }
 }
