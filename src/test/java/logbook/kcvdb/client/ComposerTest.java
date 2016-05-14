@@ -29,10 +29,10 @@ public class ComposerTest {
 
         String expected = new StringBuilder()
                 .append("{")
-                .append("\"SessionId\":")
-                .append("\"").append(uuid.toString().toLowerCase()).append("\",")
                 .append("\"AgentId\":")
-                .append("\"").append(agent).append("\"")
+                .append("\"").append(agent).append("\",")
+                .append("\"SessionId\":")
+                .append("\"").append(uuid.toString().toLowerCase()).append("\"")
                 .append("}")
                 .toString();
 
