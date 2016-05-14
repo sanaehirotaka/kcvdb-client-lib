@@ -7,6 +7,8 @@
 
 KCVDBへ送信するには`GzipSender`クラスを使用します。セッションの管理、失敗時のリトライ処理は自動で行われます。
 
+(自動で行われるセッション管理は送信失敗時のセッション再生成のみです。ゲームの再ログイン等でのセッション再生成はライブラリを利用するロジックが責任を負います。)
+
 	GzipSender sender = new GzipSender();
 	sender.add(apidata);
 	sender.send();
