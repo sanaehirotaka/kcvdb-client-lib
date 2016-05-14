@@ -110,19 +110,7 @@ public abstract class AbstractSender {
                     public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
                         // ステータスコードが2xx以外の場合にretryHandlerを呼び出す
                         int status = response.getStatusLine().getStatusCode();
-                        switch (status) {
-                        case HttpStatus.SC_OK:
-                        case HttpStatus.SC_CREATED:
-                        case HttpStatus.SC_ACCEPTED:
-                        case HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION:
-                        case HttpStatus.SC_NO_CONTENT:
-                        case HttpStatus.SC_RESET_CONTENT:
-                        case HttpStatus.SC_PARTIAL_CONTENT:
-                        case HttpStatus.SC_MULTI_STATUS:
-                            return false;
-                        default:
-                            return AbstractSender.this.retryHandler();
-                        }
+                        return !isSuccess(status) && AbstractSender.this.retryHandler();
                     }
                 })
                 .build();
@@ -166,7 +154,7 @@ public abstract class AbstractSender {
                     method.setEntity(entity.get());
 
                     HttpResponse response = client.execute(method);
-                    if (response.getStatusLine().getStatusCode() == 200) {
+                    if (isSuccess(response.getStatusLine().getStatusCode())) {
                         this.success();
                     } else {
                         this.failure();
@@ -199,19 +187,6 @@ public abstract class AbstractSender {
         return this.maxFailure >= this.failureCount;
     }
 
-    private boolean retryHandler(IOException paramIOException, int paramInt, HttpContext paramHttpContext) {
-        if (this.retryHandler()) {
-            long wait = this.retryInterval();
-            try {
-                TimeUnit.MILLISECONDS.sleep(wait);
-            } catch (InterruptedException e) {
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     /**
      * 送信成功時の動作
      */
@@ -231,5 +206,34 @@ public abstract class AbstractSender {
     public void regenerateSession() {
         this.sessionId = UUID.randomUUID();
         this.queue.clear();
+    }
+
+    private boolean retryHandler(IOException paramIOException, int paramInt, HttpContext paramHttpContext) {
+        if (this.retryHandler()) {
+            long wait = this.retryInterval();
+            try {
+                TimeUnit.MILLISECONDS.sleep(wait);
+            } catch (InterruptedException e) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isSuccess(int statusCode) {
+        switch (statusCode) {
+        case HttpStatus.SC_OK:
+        case HttpStatus.SC_CREATED:
+        case HttpStatus.SC_ACCEPTED:
+        case HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION:
+        case HttpStatus.SC_NO_CONTENT:
+        case HttpStatus.SC_RESET_CONTENT:
+        case HttpStatus.SC_PARTIAL_CONTENT:
+        case HttpStatus.SC_MULTI_STATUS:
+            return true;
+        default:
+            return false;
+        }
     }
 }
