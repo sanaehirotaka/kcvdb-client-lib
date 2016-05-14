@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
@@ -107,9 +108,21 @@ public abstract class AbstractSender {
 
                     @Override
                     public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
-                        // ステータスコードが200以外の場合にretryHandlerを呼び出す
-                        return response.getStatusLine().getStatusCode() != 200 &&
-                                AbstractSender.this.retryHandler();
+                        // ステータスコードが2xx以外の場合にretryHandlerを呼び出す
+                        int status = response.getStatusLine().getStatusCode();
+                        switch (status) {
+                        case HttpStatus.SC_OK:
+                        case HttpStatus.SC_CREATED:
+                        case HttpStatus.SC_ACCEPTED:
+                        case HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION:
+                        case HttpStatus.SC_NO_CONTENT:
+                        case HttpStatus.SC_RESET_CONTENT:
+                        case HttpStatus.SC_PARTIAL_CONTENT:
+                        case HttpStatus.SC_MULTI_STATUS:
+                            return false;
+                        default:
+                            return AbstractSender.this.retryHandler();
+                        }
                     }
                 })
                 .build();
