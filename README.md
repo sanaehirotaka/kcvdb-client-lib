@@ -1,5 +1,6 @@
 # kcvdb-client-lib
 
+KCVDBへプレイデータを送信するライブラリ
 
 ## 使い方
 
