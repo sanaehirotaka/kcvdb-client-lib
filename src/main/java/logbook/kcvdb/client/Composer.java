@@ -2,6 +2,7 @@ package logbook.kcvdb.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.UUID;
@@ -26,8 +27,8 @@ class Composer {
      */
     public static String composeMetaData(UUID uuid, String agent) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add("SessionId", uuid.toString().toLowerCase());
         builder.add("AgentId", agent);
+        builder.add("SessionId", uuid.toString().toLowerCase());
         return builder.build().toString();
     }
 
@@ -45,11 +46,13 @@ class Composer {
                 JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
                 objectBuilder.add("RequestUri", data.getRequestUri());
-                objectBuilder.add("RequestBody", data.getRequestBody());
+                objectBuilder.add("RequestBody",
+                        data.getRequestBody().replaceAll("&api(_|%5F)token=[0-9a-f]+|api(_|%5F)token=[0-9a-f]+&?", ""));
                 objectBuilder.add("ResponseBody", data.getResponseBody());
                 objectBuilder.add("StatusCode", data.getStatusCode());
                 objectBuilder.add("HttpDate", data.getHttpDate());
-                objectBuilder.add("LocalTime", DateTimeFormatter.RFC_1123_DATE_TIME.format(data.getLocalTime()));
+                objectBuilder.add("LocalTime", DateTimeFormatter.RFC_1123_DATE_TIME
+                        .format(data.getLocalTime().withZoneSameInstant(ZoneId.of("GMT"))));
 
                 arrayBuilder.add(objectBuilder.build());
             }
