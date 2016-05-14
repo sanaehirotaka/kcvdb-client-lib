@@ -24,3 +24,14 @@ KCVDBへ送信するには`GzipSender`クラスを使用します。セッショ
 	ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 	service.scheduleWithFixedDelay(sender::send, 1, 5, TimeUnit.SECONDS);
 
+## 実装例
+[検証DBプラグイン for 航海日誌](https://github.com/sanaehirotaka/logbook-kcvdb-plugin)
+
+## 免責事項
+本ソフトウェア及び作者は「角川ゲームス」及び「DMM」、「艦これ検証部」とは無関係です。
+
+## ライセンス
+
+* [The MIT License (MIT)](LICENSE)
+
+MIT ライセンスの下で公開する、自由ソフトウェアです。
